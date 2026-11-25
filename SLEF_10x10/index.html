@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>10 m × 10 m plot: LS1 | LS4 | PB</title>
+  <style>
+    body { margin: 0 auto; max-width: 1080px; font-family: sans-serif; text-align: center; }
+    .toggle { display: flex; gap: 0; margin: 0.8em auto; width: min(90%, 420px);
+              border: 2px solid #333; border-radius: 999px; overflow: hidden; }
+    .toggle button { flex: 1; padding: 0.7em 0; font-size: 1.2em; font-weight: bold;
+                     border: 0; background: #fff; color: #333; cursor: pointer; }
+    .toggle button.on { background: #333; color: #fff; }
+    video { width: 100%; height: auto; display: none; }
+    video.on { display: block; }
+  </style>
+</head>
+<body>
+  <div class="toggle" role="tablist" aria-label="Wind speed">
+    <button data-v="u0" role="tab">0 m/s wind</button>
+    <button data-v="u2" role="tab">2 m/s wind</button>
+  </div>
+  <video id="u0" src="0p0ms_1p0kgm2_5cm_LS1_LS4_PB_vert.mp4" loop muted playsinline preload="auto"></video>
+  <video id="u2" src="2p0ms_1p0kgm2_5cm_LS1_LS4_PB_vert.mp4" loop muted playsinline preload="auto"></video>
+  <p>FDS, 1.0 kg/m² litter, 5 cm grid. Level set (LS1, LS4) vs physics-based (PB).</p>
+  <script>
+    function show(id) {
+      document.querySelectorAll("video").forEach(v => {
+        const on = v.id === id;
+        v.classList.toggle("on", on);
+        if (on) { v.currentTime = 0; v.play(); } else { v.pause(); }
+      });
+      document.querySelectorAll(".toggle button").forEach(b =>
+        b.classList.toggle("on", b.dataset.v === id));
+      history.replaceState(null, "", "#" + id);
+    }
+    document.querySelectorAll(".toggle button").forEach(b =>
+      b.addEventListener("click", () => show(b.dataset.v)));
+    show(location.hash === "#u0" ? "u0" : "u2");   // default: 2 m/s
+  </script>
+</body>
+</html>
